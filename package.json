@@ -1,0 +1,21 @@
+{
+  "name": "scaling-node",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "server": "bun --watch index.ts",
+    "build": "bun esbuild.config.js",
+    "start": "bun run dist/bundle.js"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "bullmq": "^5.39.1",
+    "esbuild": "^0.24.2",
+    "fastify": "^5.2.1"
+  }
+}

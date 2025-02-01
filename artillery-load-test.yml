@@ -31,5 +31,5 @@ scenarios:
   - flow:
       - loop:
           - get:
-              url: '/sum/100000000'
+              url: '/20'
         count: 100

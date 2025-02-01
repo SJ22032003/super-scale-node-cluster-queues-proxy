@@ -1,15 +1,17 @@
 import cluster from "node:cluster";
 import { cpus } from "node:os";
 import { Server } from "./server";
-import "../queue/qWorkers/index";
+import { AdminServer } from "../queue/ui/admin-server";
+import "../queue/worker.runner";
 
-export class Clustring {
+export class Clustering {
 	private readonly cluster = cluster;
 	private totalCpus: number = 0;
 
 	constructor() {
 		this.totalCpus = cpus().length;
 		if (this.cluster.isPrimary) {
+			AdminServer.getInstance();
 			this.forkProcess();
 		} else {
 			this.runClusteredServer();
@@ -33,4 +35,4 @@ export class Clustring {
 	}
 }
 
-new Clustring();
+new Clustering();

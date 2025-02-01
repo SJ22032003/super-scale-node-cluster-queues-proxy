@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: "clustring server",
-    script: 'dist/bundle.js',
+    script: 'bun run dist/bundle.js',
     watch: '.',
     instances: 'MAX',
     autorestart: true,

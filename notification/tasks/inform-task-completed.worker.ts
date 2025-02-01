@@ -1,6 +1,6 @@
 import type { Job } from "bullmq";
-import { QWorker } from "./worker.init";
-import { TASK_COMPLETED_NOTIFICATION_Q } from "../qNames";
+import { QWorker } from "../../queue/worker.init";
+import { NOTIFICATION_Q } from "../../queue/qNames";
 
 
 async function taskCompletedNotificationQ(job: Job) {
@@ -10,7 +10,7 @@ async function taskCompletedNotificationQ(job: Job) {
 	}, 3000);
 }
 
-const qWorkerForTaskCompletedNotification = new QWorker(TASK_COMPLETED_NOTIFICATION_Q, taskCompletedNotificationQ);
+const qWorkerForTaskCompletedNotification = new QWorker(NOTIFICATION_Q, taskCompletedNotificationQ);
 
 export {
 	qWorkerForTaskCompletedNotification,

@@ -1,11 +1,11 @@
 import fastify, { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
-import { Fibonacci } from "./fibnacci";
+import { Fibonacci } from "./fibonacci";
 import type { Cluster } from "node:cluster";
 import { isMainThread, Worker } from "node:worker_threads";
 import { join } from "node:path";
 import { cpus } from "node:os";
 import { chunkify } from "../utils/sum";
-import { informTaskComplete } from "../notification/inform-task-completed";
+import { informTaskComplete } from "../notification/tasks/inform-task-completed.producer";
 
 export class Server {
 	server: FastifyInstance;
@@ -18,15 +18,17 @@ export class Server {
 			logger: false,
 			connectionTimeout: 20,
 		});
-		this.setUpRoutes()
+		this.setUpRoutes();
 	}
+
 
 	private setUpRoutes() {
 		const calledOnThisWorkerId = this.cluster.worker?.id; 
-		this.server.get('/:value', function(req: FastifyRequest<{ Params: IRequest }>, reply: FastifyReply) {
+		this.server.get('/:value', function(req: FastifyRequest<{ Params: IRequest }>, _: FastifyReply) {
 			const value = parseInt(req.params.value);
 			const answer = Fibonacci.calculateFibonacciValue(value);
 			console.log("CALLED ON THIS WORKER", calledOnThisWorkerId);
+			informTaskComplete("TASK COMPLETED TO CALCULATE FIBONACCI");
 			return { value: answer }; 
 		});
 
@@ -36,7 +38,7 @@ export class Server {
 			if(isMainThread) {
 				try {
 					const chunks = chunkify(value);
-					const workerPromises: Promise<number>[] = chunks.map(chunck => {
+					const workerPromises: Promise<number>[] = chunks.map(chunk => {
 						return new Promise<number>((resolve, reject) => {
 							const worker = new Worker(join(__dirname, "../workers/w.ts"));
 							worker.on("message", (result) => {
@@ -45,7 +47,7 @@ export class Server {
 							worker.on("error", (error) => {
 								reject(error);
 							});
-							worker.postMessage(chunck);
+							worker.postMessage(chunk);
 						})
 					});
 					const result = await Promise.all(workerPromises);
@@ -59,6 +61,7 @@ export class Server {
 				reply.send({ value: 0 });
 			}
 		});
+
 	}
 
 	public start(port: number = 3001) {

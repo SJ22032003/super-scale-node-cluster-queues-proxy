@@ -1,11 +1,6 @@
-import fastify, { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
-import { Fibonacci } from "./utils/fibonacci";
+import fastify, { type FastifyInstance } from "fastify";
 import type { Cluster } from "node:cluster";
-import { isMainThread, Worker } from "node:worker_threads";
-import { join } from "node:path";
 import { cpus } from "node:os";
-import { chunkify } from "./utils/sum";
-import { informTaskComplete } from "./notification/tasks/inform-task-completed.producer";
 import { routes } from "./routes";
 
 export class Server {
@@ -15,11 +10,7 @@ export class Server {
 
 	constructor(cluster: Cluster) {
 		this.cluster = cluster;
-		this.server = fastify({
-			logger: false,
-			connectionTimeout: 20,
-		});
-
+		this.server = fastify({ logger: false, connectionTimeout: 20 });
 		this.registerRoutes();
 	}
 
@@ -37,8 +28,4 @@ export class Server {
 			console.log(`Server listening on ${address} on WORKER ID`, calledOnThisWorkerId);
 		});
 	}
-}
-
-interface IRequest {
-	value: string;
 }

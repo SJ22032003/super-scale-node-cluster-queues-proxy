@@ -3,6 +3,7 @@ import { Fibonacci } from '../utils/fibonacci';
 import { isMainThread, Worker } from "node:worker_threads";
 import { join } from "node:path";
 import { chunkify } from "../utils/sum";
+import { informTaskComplete } from '../notification/tasks/inform-task-completed.producer';
 
 
 export async function utilsRoutes(fastify: FastifyInstance, opts: FastifyPluginOptions) {
@@ -14,6 +15,7 @@ export async function utilsRoutes(fastify: FastifyInstance, opts: FastifyPluginO
   fastify.get('/fib/:value', async (request: FastifyRequest<{ Params: IFibRequest }>, _: FastifyReply) => {
     const value = parseInt(request.params.value);
     const fib = Fibonacci.calculateFibonacciValue(value);
+    informTaskComplete(`Fibonacci value of ${value} is ${fib}`);
     return { value: fib };
   });
 
@@ -40,6 +42,7 @@ export async function utilsRoutes(fastify: FastifyInstance, opts: FastifyPluginO
           })
         });
         const result = await Promise.all(workerPromises);
+        informTaskComplete(`Sum of ${value} is ${result.reduce((acc, val) => acc + val)}`);
         reply.send({ value: result.reduce((acc, val) => acc + val) });
       } catch (err) {
         reply.send({ value: 0 });

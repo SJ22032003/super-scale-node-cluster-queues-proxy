@@ -3,9 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "server": "bun --watch index.ts",
+    "server": "bun --watch src/main.ts",
     "build": "bun esbuild.config.js",
-    "start": "bun run dist/bundle.js"
+    "start": "bun run dist/bundle.cjs"
   },
   "devDependencies": {
     "@types/bun": "latest"

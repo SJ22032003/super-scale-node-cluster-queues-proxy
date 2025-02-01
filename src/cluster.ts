@@ -1,8 +1,8 @@
 import cluster from "node:cluster";
 import { cpus } from "node:os";
-import { Server } from "./server";
-import { AdminServer } from "../queue/ui/admin-server";
-import "../queue/worker.runner";
+import { Server } from "../src/server";
+import { AdminServer } from "./queue/ui/admin-server";
+import "./queue/worker.runner";
 
 export class Clustering {
 	private readonly cluster = cluster;
@@ -34,5 +34,3 @@ export class Clustering {
 		server.start();
 	}
 }
-
-new Clustering();

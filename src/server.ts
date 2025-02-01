@@ -1,11 +1,11 @@
 import fastify, { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
-import { Fibonacci } from "./fibonacci";
+import { Fibonacci } from "./utils/fibonacci";
 import type { Cluster } from "node:cluster";
 import { isMainThread, Worker } from "node:worker_threads";
 import { join } from "node:path";
 import { cpus } from "node:os";
-import { chunkify } from "../utils/sum";
-import { informTaskComplete } from "../notification/tasks/inform-task-completed.producer";
+import { chunkify } from "./utils/sum";
+import { informTaskComplete } from "./notification/tasks/inform-task-completed.producer";
 
 export class Server {
 	server: FastifyInstance;

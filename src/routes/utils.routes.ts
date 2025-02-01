@@ -12,11 +12,11 @@ export async function utilsRoutes(fastify: FastifyInstance, opts: FastifyPluginO
    * @description This route calculates the fibonacci value of a given number
    * @param {number} value - The number to calculate the fibonacci value
   */
-  fastify.get('/fib/:value', async (request: FastifyRequest<{ Params: IFibRequest }>, _: FastifyReply) => {
+  fastify.get('/fib/:value', async (request: FastifyRequest<{ Params: IFibRequest }>, reply: FastifyReply) => {
     const value = parseInt(request.params.value);
     const fib = Fibonacci.calculateFibonacciValue(value);
     informTaskComplete(`Fibonacci value of ${value} is ${fib}`);
-    return { value: fib };
+    return reply.status(200).send({ value: fib });
   });
 
 
@@ -43,9 +43,9 @@ export async function utilsRoutes(fastify: FastifyInstance, opts: FastifyPluginO
         });
         const result = await Promise.all(workerPromises);
         informTaskComplete(`Sum of ${value} is ${result.reduce((acc, val) => acc + val)}`);
-        reply.send({ value: result.reduce((acc, val) => acc + val) });
+        return reply.send({ value: result.reduce((acc, val) => acc + val) });
       } catch (err) {
-        reply.send({ value: 0 });
+        return reply.send({ value: 0 });
       }
 
     } else {

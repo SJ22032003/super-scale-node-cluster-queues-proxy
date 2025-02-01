@@ -1,5 +1,5 @@
 import fastify from 'fastify';
-import { type Queue } from 'bullmq';
+import { Queue } from 'bullmq';
 import { createBullBoard } from "@bull-board/api";
 import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
 import { FastifyAdapter } from "@bull-board/fastify";
@@ -11,7 +11,7 @@ const serverAdapter = new FastifyAdapter().setBasePath("/ui");
 
 class QManagerForAdminUI {
     private static instance: QManagerForAdminUI;
-    private qList: BaseAdapter[] = [];
+    qList: BaseAdapter[] = [];
     bullBoard: any;
 
     private constructor() { }
@@ -47,7 +47,9 @@ export class AdminServer {
     private server = fastify();
 
     private constructor() {
-        this.setup();
+        if(qManagerForAdminUI.qList.length) {
+            this.setup();
+        }
     }
 
     static getInstance(): AdminServer {
